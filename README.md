@@ -79,5 +79,3 @@ Feel free to open issue and suggest a merge request
 **What Goupil mean ?**
 
 > This web app was designed by the [CROW plateform](https://crow.iemn.fr/) to exchange with their users.  They're looking for a name for it, continually asking their plateform to some developpement. They remember the famous french poem 'Le corbeau et le renard' de La Fontaine. Cause they're crows, them are fox but it's a too much common word in French so they took the 'old name' of this animal : Goupil
-
-mail l.97
