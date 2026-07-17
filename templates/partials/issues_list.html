@@ -1,0 +1,7 @@
+<div id="issues-list-container">
+    {% if not milestones and not issues %}
+        <p class="search-empty-msg">Aucun résultat trouvé pour votre recherche.</p>
+    {% else %}
+        {% include 'partials/milestone_issue_list.html' %}
+    {% endif %}
+</div>

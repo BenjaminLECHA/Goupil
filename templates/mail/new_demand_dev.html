@@ -1,0 +1,19 @@
+{% extends "mail/base_email.html" %}
+
+{% block content %}
+<p>Bonjour,</p>
+<p>Une nouvelle demande a été déposée sur l'application <strong>{{ demande.app.name }}</strong>.</p>
+
+<div class="info-box">
+    <p><strong>Titre :</strong> {{ demande.title }}</p>
+    <p><strong>Demandeur :</strong> {{ demande.user.username }}</p>
+    <p><strong>Description :</strong></p>
+    <p style="white-space: pre-wrap;">{{ demande.description }}</p>
+</div>
+
+<p>Accéder aux détails ci-dessous :</p>
+
+<div style="text-align: center;">
+    <a href="{{ config['FQDN'] }}{{ demande.demande_id }}/messages" class="btn">Voir la demande</a>
+</div>
+{% endblock %}

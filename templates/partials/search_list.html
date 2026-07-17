@@ -1,0 +1,30 @@
+<div id="issues-list-container">
+    {% if not milestones and not issues and not demandes %}
+        <p class="search-empty-msg">Aucun résultat trouvé pour votre recherche.</p>
+    {% else %}
+        
+        {% if demandes %}
+        <div class="demand-section">
+            <div class="section-divider collapsible-header"
+                 hx-on:click="var c=this.nextElementSibling; c.classList.toggle('hidden'); this.classList.toggle('collapsed');">
+                <span class="divider-text">Demandes trouvées</span>
+            </div>
+            {% set context = {'demandes': demandes} %}
+            {% include 'partials/demande_cards.html' with context %}
+        </div>
+        {% endif %}
+
+        {% if milestones %}
+        <div class="demand-section issue-grid-search">
+            <div class="section-divider collapsible-header"
+                 hx-on:click="var c=this.nextElementSibling; c.classList.toggle('hidden'); this.classList.toggle('collapsed');">
+                <span class="divider-text">Milestones & Issues liées</span>
+            </div>
+            <div class="collapsible-content">
+                {% include 'partials/milestone_issue_list.html' %}
+            </div>
+        </div>
+        {% endif %}
+
+    {% endif %}
+</div>

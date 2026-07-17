@@ -1,0 +1,34 @@
+<ul class="issue-grid">
+    {% for demande in context.demandes %}
+        <li class="issue-card status-id-{{ demande.statut_id }} status-{{ demande.statut.nom | lower | replace(' ', '-') }}">
+            <a href="/{{ demande.demande_id }}/messages" class="no-underline card-link">
+                <div class="card-header">
+                    <span class="status-badge">{{ demande.statut.nom }}</span>
+                    <span class="message-count-badge">
+                        <i class="fa-regular fa-message"></i> {{ demande.count_message() }}
+                    </span>
+                </div>
+                
+                {% if demande.categorie %}
+                <div class="category-tag-line">
+                    <span class="category-dot" style="background-color: {{ demande.categorie.color or '#6b7280' }};"></span>
+                    <span class="category-name" style="color: {{ demande.categorie.color or '#6b7280' }};">{{ demande.categorie.nom }}</span>
+                </div>
+                {% endif %}
+
+                <h3 class="issue-name">{{ demande.title }}</h3>
+                <p class="issue-description">
+                    {{ demande.description | truncate(150, True, '...') if demande.description else "Aucune description disponible." }}
+                </p>
+                <div class="card-footer">
+                    <span class="post-info">
+                        <i class="fa-regular fa-user"></i> {{ demande.user.username }}
+                    </span>
+                    <span class="post-date">
+                        <i class="fa-regular fa-calendar"></i> {{ demande.created_at.strftime("%d-%m-%Y") }}
+                    </span>
+                </div>
+            </a>
+        </li>
+    {% endfor %}
+</ul>

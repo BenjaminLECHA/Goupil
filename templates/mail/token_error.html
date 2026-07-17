@@ -1,0 +1,17 @@
+{% extends "mail/base_email.html" %}
+
+{% block content %}
+<p>Bonjour,</p>
+<p>Une erreur d'authentification est survenue lors de la synchronisation avec GitLab pour l'application <strong>{{
+        app_acronyme }}</strong>.</p>
+
+<div class="info-box">
+    <p><strong>Détails :</strong> Le Token Privé GitLab pour l'application {{ app_acronyme }} semble être expiré ou
+        invalide (Erreur 401).</p>
+</div>
+
+<p>Veuillez vérifier et mettre à jour le token dans les paramètres de l'application sur Goupil pour rétablir la
+    synchronisation.</p>
+
+<p>Merci,</p>
+{% endblock %}

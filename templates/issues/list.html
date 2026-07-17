@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block head_css %}
+<script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/issue.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/demande.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/search.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/message.css') }}">
+{% endblock %}
+
+{% block title %} {{ app_name }} {% endblock %}
+
+{% block content %}
+<h1>Liste des <span id="current-title">Issues</span> sur {{ app_name }}</h1>
+
+<div class="button-container">
+    <button hx-get="{{ url_for('app_routes.get_demandes', app_id=app_id) }}" hx-target="#content-list"
+        hx-swap="innerHTML" hx-trigger="click, load" hx-indicator=".loading-indicator" class="menu-button active">
+        Afficher les Demandes
+    </button>
+    <button hx-get="{{ url_for('app_routes.get_issues', app_id=app_id) }}" hx-target="#content-list" hx-swap="innerHTML"
+        hx-trigger="click" hx-indicator=".loading-indicator" class="menu-button">
+        Afficher les Issues
+    </button>
+    <span class="loading-indicator hidden">Chargement...</span>
+</div>
+
+<div class="search-container">
+    <div class="search-wrapper">
+        <button type="submit" class="search-button">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+        <input type="text" id="search-input" name="q" placeholder="Rechercher dans les demandes et issues..."
+            hx-get="{{ url_for('app_routes.search', app_id=app_id) }}" hx-trigger="keyup changed delay:500ms"
+            hx-target="#content-list" hx-swap="innerHTML" hx-include="#search-input" class="search-input" />
+    </div>
+    <button id="openModalBtn" class="btn-primary btn-new-demande">
+        <i class="fa-solid fa-plus"></i> Nouvelle demande
+    </button>
+</div>
+
+<!-- Filtres pour les demandes -->
+<div class="filters-wrapper" id="demandes-filters">
+    <div class="filter-group">
+        <label for="statut_filter">Statut :</label>
+        <select name="statut_id" id="statut_filter" hx-get="{{ url_for('app_routes.get_demandes', app_id=app_id) }}"
+            hx-target="#content-list" hx-trigger="change" hx-include="#user_filter" class="filter-select">
+            <option value="0">Tous les statuts</option>
+            {% for statut in statuts %}
+            <option value="{{ statut.statut_id }}">{{ statut.nom }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="filter-group">
+        <label for="user_filter">Demandeur :</label>
+        <select name="user_id" id="user_filter" hx-get="{{ url_for('app_routes.get_demandes', app_id=app_id) }}"
+            hx-target="#content-list" hx-trigger="change" hx-include="#statut_filter" class="filter-select">
+            <option value="0">Tous les demandeurs</option>
+            {% for user in users %}
+            <option value="{{ user.user_id }}">{{ user.username }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+
+<!-- Filtres pour les issues -->
+<div class="filters-wrapper hidden" id="issues-filters">
+    <div class="filter-group">
+        <label for="state_filter">État :</label>
+        <select name="state" id="state_filter" hx-get="{{ url_for('app_routes.get_issues', app_id=app_id) }}"
+            hx-target="#content-list" hx-trigger="change" hx-include="#label_filter" class="filter-select">
+            <option value="all">Tous</option>
+            <option value="open">Ouvertes</option>
+            <option value="closed">Fermées</option>
+        </select>
+    </div>
+    <div class="filter-group">
+        <label for="label_filter">Label :</label>
+        <select name="label_id" id="label_filter" hx-get="{{ url_for('app_routes.get_issues', app_id=app_id) }}"
+            hx-target="#content-list" hx-trigger="change" hx-include="#state_filter" class="filter-select">
+            <option value="0">Tous les labels</option>
+            {% for label in labels %}
+            <option value="{{ label.label_id }}">{{ label.title }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+
+<!-- Modal (masqué par défaut) -->
+<div id="formModal" class="modal">
+    <div class="modal-content">
+        <div class="drag-drop-overlay">
+            <i class="fa-solid fa-paperclip"></i>
+            <p>Déposez ici la ou les pièces jointes</p>
+        </div>
+        <span class="close-modal">&times;</span>
+        <h2>Nouvelle Demande</h2>
+        <form method="post" enctype="multipart/form-data" data-disable-on-submit>
+            <input type="hidden" name="csrf_token" value="{{ form.csrf_token._value() }}">
+            {{ form.app_id(value=app_id) }}
+            <div class="form-group">
+                <label for="title">Titre</label>
+                {{ form.title(class="form-control") }}<br>
+            </div>
+            <div class="form-group">
+                <label for="categorie_id">Catégorie</label>
+                {{ form.categorie_id(class="form-control") }}<br>
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                {{ form.description(class="form-control") }}<br>
+            </div>
+            <div class="form-group">
+                <label>Pièces jointes <span id="file-chosen"></span></label>
+                <div class="flex-row">
+                    <label class="btn-attach" id="clickable-attach-modal" title="Joindre des fichiers"
+                        style="cursor: pointer; font-size: 1.5rem; color: var(--primary-color);">
+                        <i class="fa-solid fa-paperclip"></i>
+                    </label>
+                </div>
+                <div class="modal-attachments-area">
+                    <div id="modal-dropzone-previews" class="dropzone-previews"></div>
+                </div>
+            </div>
+            <div class="form-group">
+                {{ form.submit(class="btn-submit") }}
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="content-list">
+    {% include 'partials/issues_list.html' %}
+</div>
+{% endblock %}
+
+{% block tail_js %}
+{{ super() }}
+<script src="{{ url_for('static', filename='js/menu.js') }}"></script>
+<script src="{{ url_for('static', filename='js/form_demande.js') }}"></script>
+<script src="{{ url_for('static', filename='js/issue_list.js') }}"></script>
+
+{% endblock %}

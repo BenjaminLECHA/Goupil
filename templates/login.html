@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Goupil - Connexion</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='goupil.svg') }}">
+</head>
+
+<body>
+
+    <div class="alert-area">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        {% set bootstrap_class = category %}
+        {% if category == 'error' %}
+        {% set bootstrap_class = 'danger' %}
+        {% elif category == 'message' %}
+        {% set bootstrap_class = 'info' %}
+        {% endif %}
+        <div class="alert alert-{{ bootstrap_class }} alert-dismissible fade show shadow-sm" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+    </div>
+
+    <div class="login-wrapper">
+
+        <div class="login-left">
+            <img src="{{ url_for('static', filename='goupil.svg') }}" alt="Goupil" class="login-logo">
+            <h3>Bienvenue</h3>
+            <p class="subtitle">Entrez vos identifiants pour accéder à Goupil</p>
+
+            <form method="post">
+                <input type="hidden" name="csrf_token" value="{{ form.csrf_token._value() }}">
+                <div class="form-group mb-3">
+                    {{ form.email(class="form-control", placeholder="Email", required=True) }}
+                </div>
+
+                <div class="form-group mb-2">
+                    <div class="input-group">
+                        {{ form.password(class="form-control", placeholder="Mot de passe", id="password-field", required=True) }}
+                        <div class="input-group-append">
+                            <button class="btn btn-light border" type="button" onclick="togglePassword()"
+                                id="toggle-btn">
+                                <i class="fa fa-eye" id="password-icon"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-main">Se connecter</button>
+            </form>
+
+              <div class="divider"></div>
+
+            <div class="mt-4 text-center">
+                <p class="link-muted small">
+                    <i class="fa-solid fa-circle-info mr-1"></i>
+                    Pour toute question relative à vos accès, contactez <a href="mailto:">l'administrateur</a>
+                </p>
+            </div>
+
+            <div>
+                <p class="text-muted mt-5 small text-center" style="opacity: 0.5;">2026 | <a href="https://github.com/BenjaminLECHA/Goupil/" target="_blank" class="footer-link"
+                        rel="noopener noreferrer" title="Accéder au code source (ouvre dans un nouvel onglet)"
+                        aria-label="Accéder au code source, s'ouvre dans un nouvel onglet">Version 1.0.0 <i
+                            class="fa-solid fa-up-right-from-square crow-icon" aria-hidden="true"></i></a></p>
+            </div>
+        </div>
+
+        <div class="login-right">
+            <div id="view-info" class="info-content animate-fade-in">
+
+                <h4>À quoi sert Goupil ?</h4>
+                <p>
+                    <strong>Goupil</strong>  est un logiciel de gestion des demandes et de suivi des développements tiers.
+                    Elle permet d'assurer un suivi transparent entre les utilisateurs et les équipes techniques, 
+                    permettant une meilleure coordination des actions et une traçabilité complète.
+                </p>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script src="{{ url_for('static', filename='js/login.js') }}"></script>
+</body>
+
+</html>

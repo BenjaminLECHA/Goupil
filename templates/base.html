@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Goupil{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    {% block head_css %}{% endblock %}
+
+</head>
+
+<body>
+    {% if current_user.is_authenticated %}
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <a href="{{ url_for('app_routes.index') }}">Goupil</a>
+        </div>
+
+        <div class="navbar-apps">
+            {% for app in current_user.get_accessible_apps() %}
+            <a href="/{{ app.app_id }}" class="navbar-item" title="{{ app.name }}">{{ app.acronyme }}</a>
+            {% endfor %}
+        </div>
+
+        <div class="navbar-menu">
+            {% if current_user.is_admin %}
+            <a href="/admin/users" class="navbar-item">Administration</a>
+            {% endif %}
+            <a href="{{ url_for('app_routes.logout') }}" class="navbar-item">Déconnexion</a>
+        </div>
+    </nav>
+    {% endif %}
+
+    <div id="flash-root">
+        <div id="flash-container" class="flash-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="flash-message {{ category }}"
+                 hx-on:load="setTimeout(() => { this.style.opacity=0; this.style.transform='translateX(20px)'; setTimeout(()=>this.remove(), 500) }, 2000)">
+                {{ message }}
+                <button class="close-btn" onclick="this.parentElement.remove()">&times;</button>
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+        </div>
+        <div id="toast-zone" class="flash-messages" style="margin-top:0"></div>
+    </div>
+
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>À propos</h3>
+                <p><strong>Goupil</strong>est un logiciel de gestion des demandes et de suivi des développements.
+                </p>
+                <p>2026 | <a href="https://github.com/BenjaminLECHA/Goupil/" target="_blank" class="footer-link"
+                        rel="noopener noreferrer" title="Accéder au code source (ouvre dans un nouvel onglet)"
+                        aria-label="Accéder au code source, s'ouvre dans un nouvel onglet">Version 1.0.0 <i
+                            class="fa-solid fa-up-right-from-square crow-icon" aria-hidden="true"></i></a></p>
+            </div>
+            <div class="footer-section">
+                <h3>Unité</h3>
+                <p>
+                </p>
+                <p><i class="fa-solid fa-location-dot"></i> </p>
+            </div>
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p><i class="fa-solid fa-envelope"></i> <a href="mailto:"></a></p>
+                <p><i class="fa-solid fa-phone"></i> </p>
+            </div>
+        </div>
+    </footer>
+    {% block tail_js %}
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {{ dropzone.load_js() }}
+    {% endblock %}
+</body>
+
+</html>

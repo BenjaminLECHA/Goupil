@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+
+{% block head_css %}
+<script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js"></script>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/issue.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/demande.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/search.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/message.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
+{% endblock %}
+
+{% block title %} {{ demande.title }} {% endblock %}
+
+{% block content %}
+<div class="message-page-layout">
+    <!-- Sidebar avec les informations de la demande -->
+    <aside class="demande-details-sidebar">
+        <div class="sidebar-header">
+            <button onclick="window.location.href='/{{ demande.app_id }}'" class="btn-back">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="app-info">
+                <span class="app-tag">{{ demande.app.acronyme }}</span>
+                <h2 class="demande-title">{{ demande.title }}</h2>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <span class="sidebar-label">Description</span>
+            <p class="description-text">{{ demande.description }}</p>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="meta-item">
+                <label for="statut_id_select">Statut</label>
+                <div hx-target="this" hx-swap="outerHTML">
+                    {% if is_dev(demande.app_id, current_user.user_id) %}
+                    <form hx-put="{{ url_for('messages_routes.update_demande_statut', demande_id=demande.demande_id) }}"
+                        hx-trigger="change">
+                        <select name="statut_id" id="statut_id_select" class="form-select-sm">
+                            {% for statut in statuts %}
+                            <option value="{{ statut.statut_id }}" {% if statut.statut_id==demande.statut_id
+                                %}selected{% endif %}>{{ statut.nom }}</option>
+                            {% endfor %}
+                        </select>
+                    </form>
+                    {% else %}
+                    <span class="status-badge status-{{ demande.statut.nom | lower | replace(' ', '-') }}">
+                        {{ demande.statut.nom }}
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="meta-item">
+                <span class="sidebar-label">Demandeur</span>
+                <span>{{ demande.user.username }}</span>
+            </div>
+            <div class="meta-item">
+                <span class="sidebar-label">Date</span>
+                <span>{{ demande.created_at.strftime('%d/%m/%Y') }}</span>
+            </div>
+            {% if is_dev(demande.app_id, current_user.user_id) and demande.demande_issue %}
+            <div class="meta-item">
+                <span class="sidebar-label">Issue GitLab</span>
+                <span>
+                    <a href="{{ demande.demande_issue[0].issue.web_url }}" target="_blank" class="gitlab-link">
+                        <i class="fa-brands fa-gitlab"></i> #{{ demande.demande_issue[0].issue.git_id }}
+                    </a>
+                </span>
+            </div>
+            {% endif %}
+        </div>
+
+        {% if demande.pieces_jointes %}
+        <div class="sidebar-section">
+            <span class="sidebar-label">Pièces jointes ({{ demande.pieces_jointes|length }})</span>
+            <div class="attachments-list">
+                {% for pj in demande.pieces_jointes %}
+                <a href="{{ url_for('app_routes.serve_upload', filename=pj.filepath) }}" target="_blank"
+                    class="attachment-link" title="{{ pj.filename }}">
+                    <i class="fa-solid fa-file"></i> {{ pj.filename }}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if is_dev(demande.app_id, current_user.user_id) %}
+        <div class="sidebar-section dev-tools dev-tools-section">
+            <label for="gitlab_issue_select">Lien GitLab</label>
+            <div hx-target="this" hx-swap="outerHTML">
+                <form hx-put="{{ url_for('messages_routes.update_demande_issue', demande_id=demande.demande_id) }}"
+                    hx-trigger="change">
+                    <select name="issue_id" id="gitlab_issue_select" class="form-select-sm">
+                        <option value="0" {% if not demande.demande_issue %} selected {% endif %}>Aucune Issue liée
+                        </option>
+                        {% for issue in issues %}
+                        <option value="{{ issue.issue_id }}" {% if issue.demande_issue==demande.demande_issue and
+                            demande.demande_issue %}selected{% endif %}>#{{ issue.git_id }} - {{ issue.title }}</option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </div>
+            <button id="openModalBtn" class="btn-primary btn-transform-issue" {% if demande.demande_issue %} disabled {%
+                endif %}>
+                <i class="fa-solid fa-code-branch"></i> Transformer en Issue
+            </button>
+        </div>
+        {% endif %}
+    </aside>
+
+    <!-- Zone principale de discussion -->
+    <main class="chat-main-area">
+        <div id="messages-list">
+            {% for message in messages %}
+            {% set ns = namespace(is_dev=false) %}
+            {% for user_app in message.user.user_app %}
+            {% if user_app.app_id == demande.app_id and user_app.is_dev %}
+            {% set ns.is_dev = true %}
+            {% endif %}
+            {% endfor %}
+            <div class="message {% if ns.is_dev %}message-dev{% else %}message-user{% endif %}">
+                <p>{{ message.content | replace('\n', '<br>') | safe }}</p>
+                {% if message.pieces_jointes %}
+                <div class="message-attachments">
+                    {% for pj in message.pieces_jointes %}
+                    <a href="{{ url_for('app_routes.serve_upload', filename=pj.filepath) }}" target="_blank"
+                        class="attachment-link message-attachment-link">
+                        <i class="fa-solid fa-paperclip"></i> {{ pj.filename }}
+                    </a>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                <small>
+                    {{ message.user.username }} • {{ message.created_at.strftime("%H:%M - %d/%m/%y") }}
+                </small>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Form d'envoi -->
+        <div class="message-form-container">
+            <form id="message-form" hx-post="/add_message" hx-target="#messages-list" hx-swap="beforeend"
+                hx-encoding="multipart/form-data"
+                hx-on::after-request="if(event.detail.successful){ this.reset(); if(window.myDropzone) window.myDropzone.removeAllFiles(true); }">
+                <input type="hidden" name="csrf_token" value="{{ form.csrf_token._value() }}">
+                {{ form.demande_id(value=demande.demande_id) }}
+                <div class="chat-input-wrapper" id="my-dropzone">
+                    {{ form.content(placeholder="Tapez votre message ici...", id="content") }}
+
+                    <div id="dropzone-previews" class="dropzone-previews"></div>
+
+                    <div class="chat-input-actions">
+                        <label class="btn-attach" id="clickable-attach" title="Joindre des fichiers">
+                            <i class="fa-solid fa-paperclip"></i>
+                        </label>
+                        <span id="file-chosen"></span>
+                        {{ form.submit(value="Envoyer", id="submit-all") }}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+
+{% if is_dev(demande.app_id, current_user.user_id) %}
+<!-- Modal Issue -->
+<div id="formModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2>Nouvelle Issue GitLab</h2>
+        <form method="post" enctype="multipart/form-data" data-disable-on-submit data-loading-text="Création...">
+            <input type="hidden" name="csrf_token" value="{{ issue_form.csrf_token._value() }}">
+            <div class="form-group">
+                <label for="issue_title">Titre</label>
+                {{ issue_form.title(class="form-control", id="issue_title") }}
+            </div>
+            <div class="form-group">
+                <label for="issue_description">Description</label>
+                {{ issue_form.description(class="form-control", rows=5, id="issue_description") }}
+            </div>
+            <div class="form-group">
+                <label for="issue_milestone">Milestone</label>
+                {{ issue_form.milestone_id(class="form-control", id="issue_milestone") }}
+            </div>
+            <div class="form-group">
+                <label for="issue_labels">Labels</label>
+                {{ issue_form.label_ids(class="form-control", id="issue_labels") }}
+            </div>
+            <div class="form-group modal-form-group">
+                {{ issue_form.submit(class="btn-submit") }}
+            </div>
+        </form>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block tail_js %}
+{{ super() }}
+<script src="{{ url_for('static', filename='js/form_demande.js') }}"></script>
+<script src="{{ url_for('static', filename='js/message_list.js') }}"></script>
+{% endblock %}

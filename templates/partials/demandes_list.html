@@ -1,0 +1,43 @@
+<div class="demand-section">
+    <div class="section-divider collapsible-header"
+         hx-on:click="var c=this.nextElementSibling; c.classList.toggle('hidden'); this.classList.toggle('collapsed');">
+        <span class="divider-text">Mes demandes ouvertes <span class="count-badge">{{ mes_demandes_ouvertes|length }}</span></span>
+    </div>
+    <div class="collapsible-content">
+        {% set context = {'demandes': mes_demandes_ouvertes} %}
+        {% include 'partials/demande_cards.html' with context %}
+    </div>
+</div>
+
+<div class="demand-section">
+    <div class="section-divider collapsible-header"
+         hx-on:click="var c=this.nextElementSibling; c.classList.toggle('hidden'); this.classList.toggle('collapsed');">
+        <span class="divider-text">Autres demandes ouvertes <span class="count-badge">{{ autres_demandes_ouvertes|length }}</span></span>
+    </div>
+    <div class="collapsible-content">
+        {% set context = {'demandes': autres_demandes_ouvertes} %}
+        {% include 'partials/demande_cards.html' with context %}
+    </div>
+</div>
+
+<div class="demand-section">
+    <div class="section-divider collapsible-header collapsed"
+         hx-on:click="var c=this.nextElementSibling; c.classList.toggle('hidden'); this.classList.toggle('collapsed');">
+        <span class="divider-text">Mes demandes fermées <span class="count-badge">{{ mes_demandes_fermees|length }}</span></span>
+    </div>
+    <div class="collapsible-content hidden">
+        {% set context = {'demandes': mes_demandes_fermees} %}
+        {% include 'partials/demande_cards.html' with context %}
+    </div>
+</div>
+
+<div class="demand-section">
+    <div class="section-divider collapsible-header collapsed"
+         hx-on:click="var c=this.nextElementSibling; c.classList.toggle('hidden'); this.classList.toggle('collapsed');">
+        <span class="divider-text">Autres demandes fermées <span class="count-badge">{{ autres_demandes_fermees|length }}</span></span>
+    </div>
+    <div class="collapsible-content hidden">
+        {% set context = {'demandes': autres_demandes_fermees} %}
+        {% include 'partials/demande_cards.html' with context %}
+    </div>
+</div>

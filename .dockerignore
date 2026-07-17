@@ -1,0 +1,9 @@
+.venv
+.goupil_db/
+.dockerignore
+.gitignore
+podman-compose.yml
+Containerfile
+README.md
+LICENSE
+.env.example

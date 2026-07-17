@@ -1,0 +1,41 @@
+services:
+  app:
+    build:
+      context: .
+    container_name: goupil
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    depends_on:
+      - goupil_postgres
+    volumes:
+      - ./uploads:/app/uploads
+
+  goupil_postgres:
+    image: postgres:18.1
+    container_name: goupil_postgres
+    restart: unless-stopped
+    volumes:
+      - ./goupil_db:/var/lib/postgresql
+      - ./BDD/database.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    env_file: .env
+
+  adminer:
+    image: adminer:5.4.2
+    container_name: adminer
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "8080:8080"
+    depends_on:
+      - goupil_postgres
+
+  mailhog:
+    image: mailhog/mailhog:v1.0.1 # Non mis à jour depuis 6 ans mais fonctionne toujours pour du local
+    container_name: mailhog
+    restart: always
+    ports:
+      - 1025:1025
+      - 8025:8025

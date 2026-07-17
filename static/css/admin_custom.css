@@ -1,0 +1,52 @@
+
+.container {
+    max-width: 100% !important;
+    width: 100% !important;
+}
+.container-fluid {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+}
+
+button[name="_add_another"], 
+button[name="_continue_editing"],
+input[name="_add_another"],
+input[name="_continue_editing"] {
+    display: none !important;
+}
+
+.flask-admin-inline-fieldset {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    padding: 5px 10px !important;
+    border: 1px solid #eee !important;
+    margin-bottom: 2px !important;
+    background: #f9f9f9;
+}
+
+.flask-admin-inline-fieldset legend {
+    display: block !important;
+    width: 60px !important;
+    font-size: 0.8rem !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    color: #888;
+}
+
+.flask-admin-inline-fieldset .control-group, 
+.flask-admin-inline-fieldset .form-group {
+    margin: 0 10px !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.flask-admin-inline-fieldset label {
+    font-size: 0.8rem !important;
+    margin-right: 5px !important;
+}
+
+[id$="-user_app_id"] {
+    display: none !important;
+}

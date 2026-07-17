@@ -1,0 +1,56 @@
+{% for milestone in milestones %}
+    <div class="milestone-container collapsible-header {% if milestone.is_closed %}milestone-closed{% else %}milestone-open{% endif %}" style="margin-top:1rem"
+         hx-on:click="var c=this.nextElementSibling; if(c.classList.contains('hidden')){ c.style.display='grid'; c.classList.remove('hidden'); this.classList.remove('collapsed'); } else { c.style.display='none'; c.classList.add('hidden'); this.classList.add('collapsed'); }">
+        <div>
+            <h2><span class="milestone-prefix">Milestone :</span> {{ milestone.title }}</h2>
+            <h3>
+                {{ milestone.start_date }} → {{ milestone.due_date }}
+                {% if milestone.is_closed %}
+                    <span class="milestone-badge">Fermée</span>
+                {% else %}
+                    <span class="milestone-badge">Ouverte</span>
+                {% endif %}
+            </h3>
+        </div>
+    </div>
+    <ul class="issue-grid issue-grid-search">
+        {% set milestone_has_issues = [false] %}
+        {% for issue in issues %}
+            {# On vérifie si l'ID de la milestone actuelle est présent dans les liens de l'issue #}
+            {% if milestone.milestone_id in issue.millestone_issue|map(attribute='milestone_id')|list %}
+                {% if milestone_has_issues.append(true) %}{% endif %}
+                <li class="issue-card {% if issue.is_closed %}issue-card-closed{% else %}issue-card-open{% endif %}">
+                    <div class="issue-card-inner">
+                        <div class="issue-header">
+                            <span class="issue-name">{{ issue.title }}</span>
+                            <span class="issue-badge {% if issue.is_closed %}issue-closed{% else %}issue-open{% endif %}">
+                                {% if issue.is_closed %}Fermée{% else %}Ouverte{% endif %}
+                            </span>
+                        </div>
+                        <div class="issue-body">
+                            <p class="issue-description">
+                                {{ issue.description | replace('\n', '<br>') | truncate(150, True, '...') | safe if issue.description else "Aucune description disponible." }}
+                            </p>
+                        </div>
+                        {% if issue.label_issue %}
+                        <div class="issue-labels">
+                            {% for label_issue in issue.label_issue %}
+                                {% if label_issue.label and not label_issue.label.is_deleted %}
+                                    <span class="label-badge" style="background-color: {{ label_issue.label.color }};">
+                                        {{ label_issue.label.title.upper() }}
+                                    </span>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </li>
+            {% endif %}
+        {% endfor %}
+        {% if not milestone_has_issues[-1] %}
+            <li style="list-style:none; grid-column:1/-1">
+                <p style="padding: 1rem; color: var(--text-muted); font-style: italic; font-size: 0.9rem;">Aucune issue correspondante dans cette milestone.</p>
+            </li>
+        {% endif %}
+    </ul>
+{% endfor %}

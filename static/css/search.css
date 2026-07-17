@@ -1,0 +1,50 @@
+/* Conteneur principal pour centrer la recherche */
+.search-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+    width: 100%;
+}
+
+/* Wrapper pour le champ de recherche et le bouton */
+.search-wrapper {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 600px;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Style du champ de recherche */
+.search-input {
+    flex: 1;
+    padding: 12px 15px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    background-color: #fff;
+}
+
+/* Style du bouton de recherche */
+.search-button {
+    background-color: #355366;
+    border: none;
+    padding: 13px 15px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+/* Style de l'icône de recherche */
+.search-icon {
+    font-size: 16px;
+}
+
+.search-button i {
+    color: white;
+    font-size: 1.1rem;
+}

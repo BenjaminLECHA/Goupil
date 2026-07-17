@@ -1,0 +1,17 @@
+{% extends "mail/base_email.html" %}
+
+{% block content %}
+<p>Bonjour,</p>
+<p>Un nouveau message a été posté par l'utilisateur <strong>{{ message.user.username }}</strong> sur la demande : <strong>{{ demande.title }}</strong></p>
+
+<div class="info-box">
+    <p><strong>Message :</strong></p>
+    <p style="white-space: pre-wrap;">{{ message.content }}</p>
+</div>
+
+<p>Vous pouvez répondre à cette demande en cliquant sur le bouton ci-dessous :</p>
+
+<div style="text-align: center;">
+    <a href="{{ config['FQDN'] }}{{ demande.demande_id }}/messages" class="btn">Gérer la demande</a>
+</div>
+{% endblock %}

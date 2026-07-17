@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block head_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/app_list.css') }}">
+{% endblock %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block content %}
+<div class="header-section">
+    <h1>Liste des applications</h1>
+</div>
+
+<div class="app-grid">
+    {% for app in app_list %}
+    {% set logo_name = app.acronyme.lower() + '.svg' %}
+    <div class="app-card {% if app.app_id not in app_user_list %}disabled{% endif %}">
+        {% if app.app_id in app_user_list %}
+        <a href="/{{ app.app_id }}">
+            <div class="app-banner">
+                <img src="{{ url_for('static', filename=logo_name) }}" alt="Logo {{ app.acronyme }}"
+                    class="app-logo">
+            </div>
+            <div class="app-content">
+                <h3 class="app-title">{{ app.acronyme }}</h3>
+                <p class="app-desc">{{ app.description if app.description else "Aucune description disponible pour cette
+                    application." }}</p>
+            </div>
+        </a>
+        {% else %}
+        <div class="app-card-restricted">
+            <div class="app-banner">
+                <img src="{{ url_for('static', filename=logo_name) }}" alt="Logo {{ app.acronyme }}"
+                    class="app-logo app-logo-grayscale">
+            </div>
+            <div class="app-content">
+                <h3 class="app-title app-title-muted">{{ app.acronyme }}</h3>
+                <p class="app-desc">{{ app.description }}</p>
+                <span class="no-access-badge"><i class="fa-solid fa-lock"></i> Accès restreint</span>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
