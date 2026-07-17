@@ -24,7 +24,29 @@ Goupil's **main features** are:
 
 1. `cp .env.example .env`
 
-2. `podman-compose up`
+2. build the app 
+
+### With podman
+
+if you haven't done it yet, add docker hub to your postman : 
+
+```sh
+sudo echo 'unqualified-search-registries = ["docker.io"]' | sudo tee -a /etc/containers/registries.conf
+```
+
+Then, in the project folder : 
+
+```sh
+podman-compose up -d
+```
+
+### With Docker
+
+In the project folder, just use this command : 
+
+```sh
+docker compose -f podman-compose.yml up -d --build
+```
 
 3. Log in with email `goupil@mail.com` and password `goupil`
 
