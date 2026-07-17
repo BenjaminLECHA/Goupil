@@ -24,13 +24,35 @@ Goupil's **main features** are:
 
 1. `cp .env.example .env`
 
-2. `podman-compose up`
+2. build the app 
+
+### With podman
+
+if you haven't done it yet, add docker hub to your postman : 
+
+```sh
+sudo echo 'unqualified-search-registries = ["docker.io"]' | sudo tee -a /etc/containers/registries.conf
+```
+
+Then, in the project folder : 
+
+```sh
+podman-compose up -d
+```
+
+### With Docker
+
+In the project folder, just use this command : 
+
+```sh
+docker compose -f podman-compose.yml up -d --build
+```
 
 3. Log in with email `goupil@mail.com` and password `goupil`
 
 4. Go on administration dashboard and add you App/Project (Projets), Users (Utilisateurs) and link beetween them (Attributions Projets)
 
-> For tou App, you'll need to generate an API Token on your Gitlab Project (Settings -> Access tokens -> Add new token -> api (only this scope, role at least reporter) 
+> For your App, you'll need to generate an API Token on your Gitlab Project (Settings -> Access tokens -> Add new token -> api (only this scope, role at least reporter) 
 
 ## Contributing
 
@@ -56,6 +78,6 @@ Feel free to open issue and suggest a merge request
 
 **What Goupil mean ?**
 
-> This web app was designed by the [CROW plateform](https://crow.iemn.fr/) to exchange with these users.  They're looking for a name to them, continually asking their plateform to some developpement. They remeber the famous french poem 'Le corbeau et le renard' de La Fontaine. Cause they're crows, them are fox but it's a too much common word in French so they took the 'old name' of this animal : Goupil
+> This web app was designed by the [CROW plateform](https://crow.iemn.fr/) to exchange with their users.  They're looking for a name for it, continually asking their plateform to some developpement. They remember the famous french poem 'Le corbeau et le renard' de La Fontaine. Cause they're crows, them are fox but it's a too much common word in French so they took the 'old name' of this animal : Goupil
 
 mail l.97
