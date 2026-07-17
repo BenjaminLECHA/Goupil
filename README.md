@@ -52,7 +52,7 @@ docker compose -f podman-compose.yml up -d --build
 
 4. Go on administration dashboard and add you App/Project (Projets), Users (Utilisateurs) and link beetween them (Attributions Projets)
 
-> For tou App, you'll need to generate an API Token on your Gitlab Project (Settings -> Access tokens -> Add new token -> api (only this scope, role at least reporter) 
+> For your App, you'll need to generate an API Token on your Gitlab Project (Settings -> Access tokens -> Add new token -> api (only this scope, role at least reporter) 
 
 ## Contributing
 
@@ -78,6 +78,6 @@ Feel free to open issue and suggest a merge request
 
 **What Goupil mean ?**
 
-> This web app was designed by the [CROW plateform](https://crow.iemn.fr/) to exchange with these users.  They're looking for a name to them, continually asking their plateform to some developpement. They remeber the famous french poem 'Le corbeau et le renard' de La Fontaine. Cause they're crows, them are fox but it's a too much common word in French so they took the 'old name' of this animal : Goupil
+> This web app was designed by the [CROW plateform](https://crow.iemn.fr/) to exchange with their users.  They're looking for a name for it, continually asking their plateform to some developpement. They remember the famous french poem 'Le corbeau et le renard' de La Fontaine. Cause they're crows, them are fox but it's a too much common word in French so they took the 'old name' of this animal : Goupil
 
 mail l.97
