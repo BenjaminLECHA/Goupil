@@ -1,9 +1,60 @@
-.venv
-.goupil_db/
-.dockerignore
+# VCS et métadonnées
+.git/
 .gitignore
-podman-compose.yml
-Containerfile
+.gitattributes
+
+# Secrets et config locale
+.env
+.env.*
+!.env.example
+
+# Environnements virtuels
+.venv
+venv/
+env/
+
+# Données runtime / volumes (montés, pas construits dans l'image)
+goupil_db/
+uploads/
+
+# Cache Python
+__pycache__/
+*.py[cod]
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+
+# Fichiers parasites OS (portabilité si build lancé sur une autre machine/CI)
+# macOS
+._*
+.DS_Store
+.AppleDouble
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+[Dd]esktop.ini
+*.lnk
+
+# Linux
+*~
+.directory
+.Trash-*
+.nfs*
+
+# Docs / fichiers de build, inutiles à l'exécution
 README.md
 LICENSE
-.env.example
+podman-compose.yml
+Dockerfile
+Containerfile
+docker-compose.yml
+
+# IDE
+.vscode/
+.idea/
