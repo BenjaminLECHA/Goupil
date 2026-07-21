@@ -1,5 +1,7 @@
+# syntax=docker/dockerfile:1
+
 # Utilise une image officielle Python comme base
-FROM python:3.14-slim
+FROM python:3.14-slim@sha256:cea0e6040540fb2b965b6e7fb5ffa00871e632eef63719f0ea54bca189ce14a6 AS base
 
 # Définit le répertoire de travail dans le conteneur
 WORKDIR /app
