@@ -2,6 +2,7 @@ services:
   app:
     build:
       context: .
+    image: goupil:latest
     container_name: goupil
     restart: unless-stopped
     ports:
@@ -12,7 +13,7 @@ services:
       - ./uploads:/app/uploads
 
   goupil_postgres:
-    image: postgres:18.1
+    image: postgres:18.1@sha256:1090bc3a8ccfb0b55f78a494d76f8d603434f7e4553543d6e807bc7bd6bbd17f
     container_name: goupil_postgres
     restart: unless-stopped
     volumes:
@@ -23,7 +24,7 @@ services:
     env_file: .env
 
   adminer:
-    image: adminer:5.4.2
+    image: adminer:5.5.0@sha256:494d4a9461105644222c938679fe58d5e3fd13fb228c76a426e81c16d4ffbaef
     container_name: adminer
     restart: unless-stopped
     env_file: .env
@@ -33,7 +34,7 @@ services:
       - goupil_postgres
 
   mailhog:
-    image: mailhog/mailhog:v1.0.1 # Non mis à jour depuis 6 ans mais fonctionne toujours pour du local
+    image: mailhog/mailhog:v1.0.1@sha256:8d76a3d4ffa32a3661311944007a415332c4bb855657f4f6c57996405c009bea # Non mis à jour depuis 6 ans mais fonctionne toujours pour du local
     container_name: mailhog
     restart: always
     ports:
