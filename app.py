@@ -1,5 +1,6 @@
 import os
 from flask import Flask, redirect, url_for, flash
+from sqlalchemy import text
 from flask_admin import Admin, AdminIndexView, expose
 from flask_admin.menu import MenuLink
 from flask_admin.contrib.sqla import ModelView
@@ -45,6 +46,22 @@ login_manager.login_view = 'app_routes.login'
 login_manager.init_app(app)
 
 log.debug(app.config['MAIL_SERVER'])
+
+
+@app.route('/health')
+@csrf.exempt
+def health():
+    """
+    Endpoint de healthcheck (utilisé par le HEALTHCHECK du Dockerfile).
+    Vérifie la connexion à la base de données.
+    """
+    try:
+        db.session.execute(text('SELECT 1'))
+        return {"status": "ok", "database": "up"}, 200
+    except Exception as e:
+        log.error(f"Healthcheck DB failed: {e}")
+        return {"status": "error", "database": "down"}, 503
+
 
 # Ajout des routes
 app.register_blueprint(app_routes)
