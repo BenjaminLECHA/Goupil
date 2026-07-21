@@ -54,6 +54,7 @@ podman-compose.yml
 Dockerfile
 Containerfile
 docker-compose.yml
+.dockerignore
 
 # IDE
 .vscode/
