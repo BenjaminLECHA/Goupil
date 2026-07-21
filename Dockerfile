@@ -45,5 +45,9 @@ USER goupil
 
 EXPOSE 5000
 
+# Healthcheck
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:5000/login')" || exit 1
+
 # Définit la commande par défaut pour le conteneur
 CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]
