@@ -3,6 +3,18 @@
 # Utilise une image officielle Python comme base
 FROM python:3.14-slim@sha256:cea0e6040540fb2b965b6e7fb5ffa00871e632eef63719f0ea54bca189ce14a6 AS base
 
+# Métadonnées OCI
+ARG BUILD_DATE
+ARG VCS_REF
+ARG VERSION=main
+LABEL org.opencontainers.image.title="Goupil" \
+      org.opencontainers.image.description="Interface between Users and Developers" \
+      org.opencontainers.image.source="https://github.com/BenjaminLECHA/Goupil" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.revision="${VCS_REF}" \
+      org.opencontainers.image.created="${BUILD_DATE}" \
+      org.opencontainers.image.licenses="MIT"
+
 # Définit le répertoire de travail dans le conteneur
 WORKDIR /app
 
