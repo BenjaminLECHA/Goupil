@@ -33,7 +33,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copie le reste de l'application de manière ciblée
-COPY --chown=goupil:goupil app.py constants.py forms.py mail.py models.py setup.py ./
+COPY --chown=goupil:goupil app.py constants.py forms.py mail.py models.py setup.py fuction_app.py ./
 COPY --chown=goupil:goupil controllers/ ./controllers/
 COPY --chown=goupil:goupil templates/ ./templates/
 COPY --chown=goupil:goupil static/ ./static/
